@@ -10,7 +10,7 @@ export default function SignupForm(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { post } = useFetch("http://localhost:8080/api");
+  const { post } = useFetch("https://localhost:8443/api");
 
   function handleFormSubmit(event) {
     event.preventDefault();

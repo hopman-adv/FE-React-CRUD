@@ -2,14 +2,14 @@ import axios from "axios";
 import TokenService from "../Services/token.service.js";
 
 export const instance = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "https://localhost:8443/api",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 export const nonauthInstance = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "https://localhost:8443/api",
   headers: {
     "Content-Type": "application/json",
   },
