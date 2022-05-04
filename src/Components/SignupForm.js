@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../Services/useFetch.js";
 import Loader from "./Loader";
+import * as ax from "../Services/auth.js";
 
 export default function SignupForm(props) {
   const navigate = useNavigate();
@@ -23,7 +24,9 @@ export default function SignupForm(props) {
         setPassword("");
         setUsername("");
         setIsLoading(false);
-        //přidat login a redirect pokud response obsahuje přidání klienta
+        ax.login(username, password).then(userReady => {
+            navigate("/profile");
+        });
       })
       .catch((error) => {
         console.log("Nastal error: ");

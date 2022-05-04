@@ -1,5 +1,5 @@
 import axios from "axios";
-import TokenService from "../services/token.service";
+import TokenService from "../Services/token.service.js";
 
 export const instance = axios.create({
   baseURL: "http://localhost:8080/api",
@@ -15,25 +15,24 @@ export const nonauthInstance = axios.create({
   },
 });
 
-
 instance.interceptors.request.use(
-  (config) => {
+  function (config) {
     const token = TokenService.getLocalAccessToken();
     if (token) {
       config.headers["Authorization"] = "Bearer " + token;
     }
     return config;
   },
-  (error) => {
+  function (error) {
     return Promise.reject(error);
   }
 );
 
 instance.interceptors.response.use(
-  (res) => {
+  function(res) {
     return res;
   },
-  async (err) => {
+  async function(err) {
     const originalConfig = err.config;
 
     if (err.response) {
@@ -53,10 +52,8 @@ instance.interceptors.response.use(
         } catch (_error) {
           if (_error.response && _error.response.data) {
             console.log("Nepřihlášen!");
-            window.location = "/src/pages/login.html";    
             return Promise.reject(_error.response.data);
           }
-
           return Promise.reject(_error);
         }
       }
@@ -64,7 +61,6 @@ instance.interceptors.response.use(
       if (err.response.status === 403 && err.response.data) {
         console.log("Odhlášen!");
         TokenService.removeUser();
-        window.location = "/src/pages/login.html";
         return Promise.reject(err.response.data);
       }
     }
@@ -82,7 +78,7 @@ function signin(username, password) {
 
 function logout(id) {
   return nonauthInstance.post("/auth/logout", {
-    userId: id
+    userId: id,
   });
 }
 
@@ -97,12 +93,11 @@ export async function login(username, password) {
     const res = await signin(username, password);
 
     const user = res.data;
-    TokenService.setUser(user).then((bool) => {
-      window.location = "/src/pages/profile.html";
-    });
+    const userSet = await TokenService.setUser(user);
+    return user;
   } catch (err) {
-    if(err.response.status === 401) {
-      alert("Non-existing user or bad password!");  
+    if (err.response.status === 401) {
+      alert("Non-existing user or bad password!");
     }
     console.log("Error:");
     console.log(err);
@@ -115,11 +110,10 @@ export async function logoutUser() {
     const userData = TokenService.getUser();
     console.log(userData);
     const res = await logout(userData.id);
-    
+
     console.log(res.data);
     TokenService.removeUser();
-    window.location = "index.html";
-  }catch(error) {
+  } catch (error) {
     console.log(error);
   }
 }

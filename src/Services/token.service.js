@@ -16,10 +16,24 @@ class TokenService {
     }
 
     getUsername() {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = this.getUser();
       return user?.username;
     }
 
+    getEmail() {
+      const user = this.getUser();
+      return user?.email;
+    }
+
+    getId() {
+      const user = this.getUser();
+      return user?.id;
+    }
+
+    getRoles() {
+      const user = this.getUser();
+      return user?.roles;
+    }
   
     getUser() {
       return JSON.parse(localStorage.getItem("user"));

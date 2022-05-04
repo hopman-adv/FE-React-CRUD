@@ -1,17 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as ax from "../Services/update.js";
 import TokenService from "../Services/token.service.js";
 import { useNavigate } from "react-router-dom";
 
-export default function Profile(props) {
+export default function ProfileEditUser(props) {
+  const {editedUser, handleUsersUpdate, ...rest} = props;
   const navigate = useNavigate();
-  const [username, setUsername] = useState(
-    TokenService.getUsername() ?? "USER NOT LOGGED IN!"
-  );
-  const [email, setEmail] = useState(
-    TokenService.getEmail() ?? "USER NOT LOGGED IN!"
-  );
-  const [id, setId] = useState(TokenService.getId() ?? "USER NOT LOGGED IN!");
+  const [username, setUsername] = useState(editedUser.username);
+  const [email, setEmail] = useState(editedUser.email);
+  const [id, setId] = useState(editedUser.id);
+
+  useEffect(() => {
+    setUsername(editedUser.username);
+    setEmail(editedUser.email);
+    setId(editedUser.id);
+  }, [editedUser]);
 
   function handleFormSubmit(event) {
     event.preventDefault();
@@ -23,6 +26,9 @@ export default function Profile(props) {
           alert("User not logged!");
           TokenService.removeUser();
           navigate("/login");
+        }else {
+          alert("User updated!");
+          handleUsersUpdate();
         }
       });
     } catch (error) {
@@ -34,7 +40,7 @@ export default function Profile(props) {
     <div className="w3-container">
       <div className="w3-card-4 w3-section w3-content">
         <header className="w3-container w3-green">
-          <h2>Your profile</h2>
+          <h2>Edit user</h2>
         </header>
         <form id="profile-form" onSubmit={handleFormSubmit}>
           <div className="w3-container">
@@ -42,7 +48,6 @@ export default function Profile(props) {
             <p
               id="id"
               className="w3-input"
-              onChange={(e) => setId(e.target.value)}
             >
               {id}
             </p>
